@@ -1,8 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
+const categoryRoute = require('./category.route.js')
+const expenseRoute = require('./expense.routes.js')
+const incomeRoute = require('./income.routes.js')
+
 router.get("/", (req, res, next) => {
-  res.json("All good in here");
+  res.status(200).json("All good in here");
 });
+
+router.use('/expenses', expenseRoute);
+router.use('/incomes', incomeRoute);
+router.use('/categories', categoryRoute);
 
 module.exports = router;
