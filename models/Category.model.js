@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
-const expenseCategorySchema = new mongoose.Schema({
+const categorySchema = new mongoose.Schema({
   name: { type: String, required: true },
   expenses: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Expense' }],
   incomes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Income' }],
 });
 
-const ExpenseCategory = mongoose.model('ExpenseCategory', expenseCategorySchema);
+const Category = mongoose.model('ExpenseCategory', categorySchema);
 
-module.exports = ExpenseCategory;
+module.exports = Category;
