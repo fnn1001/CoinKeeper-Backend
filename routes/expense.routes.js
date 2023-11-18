@@ -1,6 +1,6 @@
 const express = require("express");
-const { body, validationResult } = require("express-validator");
 const router = express.Router();
+const { body, validationResult } = require("express-validator");
 
 const Expense = require("../models/Expense.model");
 
