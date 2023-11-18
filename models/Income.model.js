@@ -1,10 +1,18 @@
 const mongoose = require('mongoose');
 
 const incomeSchema = new mongoose.Schema({
-  amount: { type: Number, required: true },
-  category: { type: String, default: 'income' },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  category: {
+    type: String,
+    default: 'income',
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
-const Income = mongoose.model('Income', incomeSchema);
-
-module.exports = Income;
+module.exports = mongoose.model('Income', incomeSchema);
