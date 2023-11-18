@@ -6,6 +6,6 @@ const categorySchema = new mongoose.Schema({
   incomes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Income' }],
 });
 
-const Category = mongoose.model('ExpenseCategory', categorySchema);
+const Category = mongoose.model('Category', categorySchema);
 
 module.exports = Category;
