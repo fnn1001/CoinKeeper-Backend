@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const expenseSchema = new mongoose.Schema({
+  name: { type: String, required: false },
   amount: { type: Number, required: true },
   categoryID: { type: mongoose.Schema.Types.ObjectId, ref: 'ExpenseCategory', required: true },
   date: { type: Date, default: Date.now },

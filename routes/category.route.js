@@ -1,93 +1,102 @@
-const express = require('express');
+// EXTERNAL DEPENDENCIES
+const express = require("express");
 const router = express.Router();
-const { body, validationResult } = require('express-validator');
+const { body, validationResult } = require("express-validator");
 
-const Category = require('../models/Category.model');
+// MODELS
+const Category = require("../models/Category.model");
 
 // Create one category
-router.post('/', [
-  body('name').notEmpty().isString(),
-], async (req, res) => {
+router.post(
+  "/",
+  [
+    body("name").notEmpty().isString(),
+  ],
+  async (req, res) => {
 
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+    // Check for validation errors
+    const errors = validationResult(req);
 
-  const category = new Category({
-    name: req.body.name,
-  });
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
 
-  try {
-    const newCategory = await category.save();
-    res.status(201).json(newCategory);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
+    const category = new Category({
+      name: req.body.name,
+    });
 
-  // Get all categories
-router.get('/', async (req, res) => {
     try {
-      const categories = await Category.find();
-      res.json(categories);
+      const newCategory = await category.save();
+
+      res.status(201).json(newCategory);
     } catch (err) {
-      res.status(500).json({ message: err.message });
+      res.status(400).json({ message: err.message });
     }
   });
 
-  // Get one category
-router.get('/:id', getCategory, (req, res) => {
-    res.json(res.category);
-  });
-
-  /// Update one category
-router.patch('/:id', getCategory, [
-
-  body('name').notEmpty().isString(),
-], async (req, res) => {
-  
-  // Check for validation errors
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  if (req.body.name != null) {
-    res.category.name = req.body.name;
-  }
-
+// Get all categories
+router.get("/", async (req, res) => {
   try {
-    const updatedCategory = await res.category.save();
-    res.json(updatedCategory);
+    const categories = await Category.find();
+
+    res.json(categories);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
-  // Delete one category
-router.delete('/:id', getCategory, async (req, res) => {
-    try {
-      await res.category.deleteOne();
-      res.json({ message: 'Category deleted' });
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-  });
+// Get one category
+router.get("/:id", async (req, res) => {
+  try {
+    const category = await Category.findById(req.params.id);
 
-  // Middleware function to get a specific category by ID
-async function getCategory(req, res, next) {
+    if (!category) {
+      return res.status(404).json({ message: "Category not found" });
+    }
+
+    res.json(category);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Update a category
+router.patch(
+  "/:id",
+  [
+    body("name").notEmpty().isString(),
+  ],
+  async (req, res) => {
     try {
-      const category = await Category.findById(req.params.id);
-      if (category == null) {
-        return res.status(404).json({ message: 'Category not found' });
+      const categoryId = req.params.id;
+      
+      const name = req.body.name;
+
+      const category = await Category.findById(categoryId);
+
+      if (!category) {
+        return res.status(404).json({ message: "Category not found" });
       }
-      res.category = category;
-      next();
+
+      category.name = name;
+      await category.save();
+
+      res.status(200).json(category);
     } catch (err) {
-      return res.status(500).json({ message: err.message });
+      res.status(500).json({ message: err.message });
     }
+  });
+
+
+// Delete one category
+router.delete("/:id", async (req, res) => {
+  try {
+    await Category.findByIdAndDelete(req.params.id);
+    res.json({ message: "Category deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
+});
+
 
 module.exports = router;
