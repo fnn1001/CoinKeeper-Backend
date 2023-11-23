@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
 // Get one category
 router.get("/:id", async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id);
+    const category = await Category.findById(req.params.id).populate("expenses");
 
     if (!category) {
       return res.status(404).json({ message: "Category not found" });
