@@ -5,6 +5,7 @@ const categoryRoute = require('./category.route.js')
 const expenseRoute = require('./expense.routes.js')
 const incomeRoute = require('./income.routes.js')
 
+
 router.get("/", (req, res, next) => {
   res.status(200).json("All good in here");
 });
