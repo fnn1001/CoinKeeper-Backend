@@ -39,7 +39,14 @@ app.get('/api/coin-price', async (req, res) => {
   }
 });
 
+const investRoutes = require("./routes/Invest.routes");
+app.use("/invest", investRoutes);
+
+
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require("./error-handling")(app);
 
 module.exports = app;
+
+
