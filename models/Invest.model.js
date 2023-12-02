@@ -17,6 +17,10 @@ const investSchema = new mongoose.Schema({
         type: Date,
         default: ''
     },
+    purchasePrice: {
+        type: Number,
+        default: ''
+    },
     });
 
 const Invest = mongoose.model('Invest', investSchema);

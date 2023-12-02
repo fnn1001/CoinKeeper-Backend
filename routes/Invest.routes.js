@@ -25,11 +25,24 @@ router.get('/user/:userId', async (req, res) => {
   }
 });
 
-// Route to add a new investment
 router.post('/', async (req, res) => {
+  console.log("Received body:", req.body); // Log the received body
+
   try {
-    const { userId, currency, purchaseDate, purchaseAmount } = req.body;
-    const newInvestment = new Investment({ userId, currency, purchaseDate, amount: purchaseAmount });
+    const { userId, Coin, date, amount, purchasePrice } = req.body;
+
+    if (!amount) {
+      return res.status(400).json({ error: 'Amount is required' });
+    }
+
+    const newInvestment = new Investment({ 
+      userId, 
+      Coin, 
+      date: new Date(date),
+      amount, 
+      purchasePrice 
+    });
+
     await newInvestment.save();
     res.status(201).json({ message: 'Investment added successfully', investment: newInvestment });
   } catch (error) {
@@ -37,6 +50,7 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 // Route to update an investment
 router.put('/:id', async (req, res) => {
