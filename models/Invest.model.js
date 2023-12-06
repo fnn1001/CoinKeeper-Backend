@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
 const investSchema = new mongoose.Schema({
-    userID : {
-        type: String,
+    userId : {
+        type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
     Coin: {
@@ -15,6 +15,10 @@ const investSchema = new mongoose.Schema({
     },
     date: {
         type: Date,
+        default: ''
+    },
+    purchasePrice: {
+        type: Number,
         default: ''
     },
     });
