@@ -4,9 +4,9 @@ const router = express.Router();
 const { body, validationResult } = require("express-validator");
 
 // MODELS
-const Category = require("../models/Category.model");
+const Budget = require("../models/Budget.model");
 
-// Create one category
+// Create one budget
 router.post(
   "/",
   [
@@ -21,46 +21,46 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const category = new Category({
+    const budget = new Budget({
       name: req.body.name,
     });
 
     try {
-      const newCategory = await category.save();
+      const newBudget = await budget.save();
 
-      res.status(201).json(newCategory);
+      res.status(201).json(newBudget);
     } catch (err) {
       res.status(400).json({ message: err.message });
     }
   });
 
-// Get all categories
+// Get all budgets
 router.get("/", async (req, res) => {
   try {
-    const categories = await Category.find();
+    const budgets = await Budget.find();
 
-    res.json(categories);
+    res.json(budgets);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Get one category
+// Get one budget
 router.get("/:id", async (req, res) => {
   try {
-    const category = await Category.findById(req.params.id).populate("expenses");
+    const budget = await Budget.findById(req.params.id).populate("expenses");
 
-    if (!category) {
-      return res.status(404).json({ message: "Category not found" });
+    if (!budget) {
+      return res.status(404).json({ message: "Budget not found" });
     }
 
-    res.json(category);
+    res.json(budget);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Update a category
+// Update a budget
 router.patch(
   "/:id",
   [
@@ -68,31 +68,31 @@ router.patch(
   ],
   async (req, res) => {
     try {
-      const categoryId = req.params.id;
+      const budgetId = req.params.id;
       
       const name = req.body.name;
 
-      const category = await Category.findById(categoryId);
+      const budget = await Budget.findById(budgetId);
 
-      if (!category) {
-        return res.status(404).json({ message: "Category not found" });
+      if (!budget) {
+        return res.status(404).json({ message: "Budget not found" });
       }
 
-      category.name = name;
-      await category.save();
+      budget.name = name;
+      await budget.save();
 
-      res.status(200).json(category);
+      res.status(200).json(budget);
     } catch (err) {
       res.status(500).json({ message: err.message });
     }
   });
 
 
-// Delete one category
+// Delete one budget
 router.delete("/:id", async (req, res) => {
   try {
-    await Category.findByIdAndDelete(req.params.id);
-    res.json({ message: "Category deleted" });
+    await Budget.findByIdAndDelete(req.params.id);
+    res.json({ message: "Budget deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -5,14 +5,14 @@ const { body, validationResult } = require("express-validator");
 
 // MODELS
 const Expense = require("../models/Expense.model");
-const Category = require("../models/Category.model");
+const Budget = require("../models/Budget.model");
 
 // Create one expense
 router.post(
   "/",
   [
     body("amount").isNumeric(),
-    body("categoryID").isMongoId(),
+    body("budgetID").isMongoId(),
     body("date").isISO8601(),
     body("name").optional()
   ],
@@ -26,13 +26,13 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    // Extract category ID from the request
-    const categoryID = req.body.categoryID;
+    // Extract budget ID from the request
+    const budgetID = req.body.budgetID;
 
     // New expense object
     const expense = new Expense({
       amount: req.body.amount,
-      categoryID: categoryID, // here is the link to the category's id
+      budgetID: budgetID, // here is the link to the budget's id
       date: req.body.date,
       name: req.body.name,
     });
@@ -46,15 +46,15 @@ router.post(
       const expenseID = newExpense._id
       console.log(expenseID)
 
-      // Retrieve the corresponding Category to add the expense to it
-      const category = await Category.findById(categoryID);
+      // Retrieve the corresponding Budget to add the expense to it
+      const budget = await Budget.findById(budgetID);
       
-      if (!category) {
+      if (!budget) {
         res.status(400).json({ message: err.message });
 
       } else {
-        category.expenses = [...category.expenses, expenseID]
-        await category.save()
+        budget.expenses = [...budget.expenses, expenseID]
+        await budget.save()
         
         res.status(201).json(newExpense);
       }

@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
-const categoryRoute = require('./category.route.js')
+const budgetRoute = require('./budget.route.js')
 const expenseRoute = require('./expense.routes.js')
-const incomeRoute = require('./income.routes.js')
 
 
 router.get("/", (req, res, next) => {
@@ -11,7 +10,6 @@ router.get("/", (req, res, next) => {
 });
 
 router.use('/expenses', expenseRoute);
-router.use('/incomes', incomeRoute);
-router.use('/categories', categoryRoute);
+router.use('/budgets', budgetRoute);
 
 module.exports = router;
