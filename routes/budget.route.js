@@ -5,6 +5,7 @@ const { body, validationResult } = require("express-validator");
 
 // MODELS
 const Budget = require("../models/Budget.model");
+const Expense = require("../models/Expense.model")
 
 // Create one budget
 router.post(
@@ -13,7 +14,6 @@ router.post(
     body("name").notEmpty().isString(),
   ],
   async (req, res) => {
-
     // Check for validation errors
     const errors = validationResult(req);
 
@@ -23,6 +23,7 @@ router.post(
 
     const budget = new Budget({
       name: req.body.name,
+      max: req.body.max
     });
 
     try {
@@ -37,8 +38,8 @@ router.post(
 // Get all budgets
 router.get("/", async (req, res) => {
   try {
-    const budgets = await Budget.find();
-
+    const budgets = await Budget.find().populate('expenses');
+ 
     res.json(budgets);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -91,7 +92,22 @@ router.patch(
 // Delete one budget
 router.delete("/:id", async (req, res) => {
   try {
-    await Budget.findByIdAndDelete(req.params.id);
+    const id = req.params.id
+    const budget = await Budget.findById(id)
+
+    await budget?.expenses?.forEach(async (expense) => {
+      const expenseItem = await Expense.findById(expense)
+
+      if(expenseItem) {
+        expenseItem.budgetID = await null
+        
+        await expenseItem.save()
+      }
+
+    })
+
+    await budget.deleteOne()
+
     res.json({ message: "Budget deleted" });
   } catch (err) {
     res.status(500).json({ message: err.message });

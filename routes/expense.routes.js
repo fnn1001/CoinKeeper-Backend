@@ -12,15 +12,15 @@ router.post(
   "/",
   [
     body("amount").isNumeric(),
-    body("budgetID").isMongoId(),
-    body("date").isISO8601(),
     body("name").optional()
   ],
   async (req, res) => {
-    console.log("test expense route");
+    console.log(req.body)
+    const date = new Date().toISOString()
 
     // Check for validation errors
     const errors = validationResult(req);
+    
     if (!errors.isEmpty()) {
       console.log("Validation errors:", errors.array());
       return res.status(400).json({ errors: errors.array() });
@@ -32,8 +32,8 @@ router.post(
     // New expense object
     const expense = new Expense({
       amount: req.body.amount,
-      budgetID: budgetID, // here is the link to the budget's id
-      date: req.body.date,
+      budgetID: budgetID === 'Uncategorized' ? null : budgetID, // here is the link to the budget's id
+      date,
       name: req.body.name,
     });
 
@@ -68,7 +68,8 @@ router.post(
 router.get("/", async (req, res) => {
   try {
     const expenses = await Expense.find();
-    res.json(expenses);
+    
+    res.status(200).json(expenses);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

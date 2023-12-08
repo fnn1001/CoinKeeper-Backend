@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Investment = require('../models/Invest.model'); // Replace with your actual model path
+const Investment = require('../models/Invest.model'); 
 
 // Route to get all investments
 router.get('/', async (req, res) => {
